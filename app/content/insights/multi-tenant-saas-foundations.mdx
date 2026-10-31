@@ -1,0 +1,43 @@
+---
+# SAMPLE DRAFT for layout testing. `sample: true` means it can never be published.
+title: "Multi-Tenant SaaS Foundations: Decisions to Make Early"
+description: Tenant isolation, roles and billing readiness are cheap to design in and expensive to retrofit. Here is what to decide before the first customer.
+category: SaaS Development
+tags: [SaaS, Architecture, Django]
+sample: true
+published: false
+---
+
+A first version of a SaaS product should be small. Its foundations should not be fragile. A handful of architectural decisions are cheap on day one and painful to change after the tenth customer.
+
+## Decide how tenants are isolated
+
+Every SaaS product serves several customers from one system. The core question is how their data is kept apart.
+
+| Approach | Isolation | Operational cost |
+| --- | --- | --- |
+| Shared tables with a tenant column | Logical | Lowest |
+| Schema per tenant | Stronger | Medium |
+| Database per tenant | Strongest | Highest |
+
+For most early products, shared tables with a tenant key are enough, provided every query is scoped automatically rather than by remembering to filter.
+
+## Make tenant scoping impossible to forget
+
+Put the tenant filter in one place, such as a model manager or a request-level context, so a new endpoint can't accidentally return another customer's records. Add tests that try to read across tenants and expect a failure.
+
+## Roles belong to memberships
+
+A person can belong to more than one organisation with different roles. Modelling roles on the membership, not the user, avoids an awkward migration later.
+
+## Plan for subscriptions, even before billing
+
+You may not charge on day one, but the product should know which plan a tenant is on and what that plan allows. Feature limits checked in one place make pricing changes a configuration task instead of a code hunt.
+
+## Keep an audit trail
+
+Recording who changed what, and when, helps support, security reviews and customer trust. It is far easier to start logging early than to reconstruct history later.
+
+## Takeaways
+
+Keep the first version focused on value, but invest a few days in isolation, roles, plans and auditing. They are the parts that are hardest to change once customers depend on them.

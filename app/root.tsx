@@ -1,3 +1,4 @@
+import { domAnimation, LazyMotion } from "motion/react";
 import type { ReactNode } from "react";
 import {
   isRouteErrorResponse,
@@ -11,34 +12,48 @@ import {
 import type { Route } from "./+types/root";
 import "virtual:display-font.css";
 import "./app.css";
+import { RevealObserver } from "./components/layout/RevealObserver";
 import { SiteFooter } from "./components/layout/SiteFooter";
 import { SiteHeader } from "./components/layout/SiteHeader";
 import { SkipLink } from "./components/layout/SkipLink";
+import { SmoothScroll } from "./components/layout/SmoothScroll";
+import { Button } from "./components/ui/Button";
 import { NotFound } from "./routes/not-found";
 
 export const links: Route.LinksFunction = () => [
   { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
+  { rel: "icon", href: "/favicon.ico", sizes: "32x32" },
   { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
   { rel: "manifest", href: "/site.webmanifest" },
 ];
 
+/** Marks JS as available before first paint so reveal styles apply without a flash. */
+const JS_FLAG = `document.documentElement.classList.add("js")`;
+
 export function Layout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    // suppressHydrationWarning: the inline script adds class="js" before React loads.
+    <html lang="en" suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="theme-color" content="#08090D" />
+        <meta name="color-scheme" content="dark" />
+        <script dangerouslySetInnerHTML={{ __html: JS_FLAG }} />
         <Meta />
         <Links />
       </head>
       <body>
-        <SkipLink />
-        <SiteHeader />
-        <main id="main" tabIndex={-1} className="outline-none">
-          {children}
-        </main>
-        <SiteFooter />
+        <LazyMotion features={domAnimation} strict>
+          <SkipLink />
+          <SiteHeader />
+          <main id="main" tabIndex={-1} className="outline-none">
+            {children}
+          </main>
+          <SiteFooter />
+        </LazyMotion>
+        <RevealObserver />
+        <SmoothScroll />
         <ScrollRestoration />
         <Scripts />
       </body>
@@ -65,6 +80,11 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
       <p className="text-lead text-muted">
         Please refresh the page or try again shortly.
       </p>
+      <div>
+        <Button to="/" variant="secondary">
+          Back to home
+        </Button>
+      </div>
       {details && (
         <pre className="overflow-x-auto rounded-card border border-border bg-surface p-4 text-small">
           <code>{details}</code>

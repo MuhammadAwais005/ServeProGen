@@ -11,5 +11,38 @@ interface ImportMeta {
   readonly env: ImportMetaEnv;
 }
 
-/** Clash Display @font-face, emitted only when the font file exists (vite.config.ts). */
+/** True in `npm run dev` and preview builds: drafts are shown with a banner. */
+declare const __CONTENT_PREVIEW__: boolean;
+
+/** Clash Display @font-face, emitted only when the font file exists. */
 declare module "virtual:display-font.css";
+
+type ContentTocItem = { depth: 2 | 3; text: string; id: string };
+
+declare module "virtual:content/projects" {
+  import type { ProjectFrontmatter } from "~/content/schema";
+  const projects: Array<
+    ProjectFrontmatter & { slug: string; readingMinutes: number; toc: ContentTocItem[] }
+  >;
+  export default projects;
+}
+
+declare module "virtual:content/project-bodies" {
+  import type { MDXContent } from "mdx/types";
+  const bodies: Record<string, MDXContent>;
+  export default bodies;
+}
+
+declare module "virtual:content/insights" {
+  import type { ArticleFrontmatter } from "~/content/schema";
+  const articles: Array<
+    ArticleFrontmatter & { slug: string; readingMinutes: number; toc: ContentTocItem[] }
+  >;
+  export default articles;
+}
+
+declare module "virtual:content/insight-bodies" {
+  import type { MDXContent } from "mdx/types";
+  const bodies: Record<string, MDXContent>;
+  export default bodies;
+}

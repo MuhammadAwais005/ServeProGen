@@ -1,10 +1,4 @@
-import {
-  useId,
-  type InputHTMLAttributes,
-  type ReactNode,
-  type SelectHTMLAttributes,
-  type TextareaHTMLAttributes,
-} from "react";
+import { useId, type ComponentProps, type ReactNode } from "react";
 import { cn } from "~/lib/cn";
 
 const control =
@@ -71,7 +65,7 @@ export function TextField({
   error,
   className,
   ...props
-}: BaseFieldProps & InputHTMLAttributes<HTMLInputElement>) {
+}: BaseFieldProps & ComponentProps<"input">) {
   return (
     <FieldShell label={label} hint={hint} error={error} required={props.required}>
       {({ inputId, describedBy, invalid }) => (
@@ -99,7 +93,7 @@ export function TextAreaField({
   className,
   rows = 5,
   ...props
-}: BaseFieldProps & TextareaHTMLAttributes<HTMLTextAreaElement>) {
+}: BaseFieldProps & ComponentProps<"textarea">) {
   return (
     <FieldShell label={label} hint={hint} error={error} required={props.required}>
       {({ inputId, describedBy, invalid }) => (
@@ -128,7 +122,7 @@ export function SelectField({
   className,
   children,
   ...props
-}: BaseFieldProps & SelectHTMLAttributes<HTMLSelectElement>) {
+}: BaseFieldProps & ComponentProps<"select">) {
   return (
     <FieldShell label={label} hint={hint} error={error} required={props.required}>
       {({ inputId, describedBy, invalid }) => (

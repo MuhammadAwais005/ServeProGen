@@ -1,18 +1,45 @@
 ---
-# DRAFT. Every value below was prefilled from earlier project notes and is NOT
-# confirmed by the founder. Do not publish or quote any of it until each field is
-# checked and removed from the `unconfirmed` list. The build refuses to publish
-# a project while `unconfirmed` is non-empty.
+# Source: founder's master brief (31 Oct 2026). Only the verified concept is described.
+# Do NOT add live order routing, Gemini, Django Channels, takeaway tokens or other
+# features until the founder confirms them. Status is not yet confirmed.
 title: Dastarkhwan
-category: Restaurant management SaaS
-summary: "[TO CONFIRM] Restaurant management platform with role-based dashboards for owners, managers, chefs, runners and cashiers, live order routing, a takeaway module with pickup tokens, and monthly reporting."
-status: unconfirmed # notes said "in development"; confirm the current state
-services: [saas, full-stack-web, ai-ml]
-stack: [Django REST Framework, Django Channels, React, Vite, Tailwind CSS, Google Gemini]
-unconfirmed: [category, summary, status, services, stack]
+category: Restaurant SaaS
+summary: A restaurant SaaS built around QR-based menus, with restaurant-specific experiences, table-specific menu access and kitchen isolation between restaurants.
+status: unconfirmed
+services: [saas, full-stack-web]
+areas: [saas, web]
+stack: [React, Django]
+features:
+  - QR-based restaurant menu
+  - Restaurant-specific experiences
+  - Table-specific menu access
+  - Multi-restaurant kitchen isolation
+visual: qr-menu
+unconfirmed: [status]
 featured: true
 published: false
-order: 10
+order: 20
 ---
 
-{/* Case study body to be written in Phase 4 once the facts are confirmed. */}
+## Overview
+
+Dastarkhwan is a restaurant software-as-a-service product. Guests scan a QR code to open the menu, and each restaurant on the platform runs its own experience.
+
+## The problem
+
+Restaurants need a simple way for guests to see an up-to-date menu at the table, and a platform serving several restaurants must keep each one's menu and kitchen activity separate.
+
+## The approach
+
+- **QR-based menus:** guests open the menu from a QR code, without installing an app.
+- **Restaurant-specific experiences:** each restaurant presents its own menu and identity.
+- **Table-specific access:** a menu link is tied to the table it was opened from.
+- **Kitchen isolation:** in a multi-restaurant setup, each kitchen sees only its own restaurant's activity.
+
+## Technology
+
+React · Django
+
+## Status
+
+To be confirmed.

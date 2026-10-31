@@ -113,5 +113,280 @@
 
 /* Vertical rhythm between page sections */
 @utility section-y {
-  padding-block: clamp(5rem, 3rem + 8vw, 10rem);
+  padding-block: clamp(4.5rem, 2.5rem + 7vw, 9rem);
+}
+
+/* Hero headline: sized by width AND height so it fits a 1366×768 laptop. */
+@utility text-hero {
+  font-size: clamp(2.6rem, min(1.4rem + 5.2vw, 9.4vh + 0.6rem), 7rem);
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+}
+
+/* Hairline divider with an orange signal at the start */
+@utility rule-signal {
+  background: linear-gradient(
+    to right,
+    var(--color-accent) 0 2.5rem,
+    var(--color-border) 2.5rem 100%
+  );
+  height: 1px;
+}
+
+/* ---------- Reveal system ----------
+ * Content is visible by default (no JS, crawlers, reduced motion).
+ * root.tsx adds .js to <html> before paint; the RevealObserver sets
+ * data-revealed when an element enters the viewport. A failsafe animation
+ * reveals everything after 2.5s in case JavaScript fails to run. */
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-reveal]:not([data-revealed]) {
+    opacity: 0;
+    transform: translate3d(0, 24px, 0);
+    animation: reveal-failsafe 0.01s 2.5s forwards;
+  }
+  .js [data-reveal] {
+    transition:
+      opacity var(--duration-slow) var(--ease-out-expo),
+      transform var(--duration-slow) var(--ease-out-expo);
+    transition-delay: calc(var(--reveal-index, 0) * var(--stagger));
+  }
+}
+
+@keyframes reveal-failsafe {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- Hero intro (pure CSS: no JavaScript needed to see the text) ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-line {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.08em;
+    margin-bottom: -0.08em;
+  }
+  .hero-line > span {
+    display: block;
+    animation: hero-rise 1s var(--ease-out-expo) both;
+    animation-delay: calc(var(--line, 0) * 110ms);
+  }
+  .hero-fade {
+    animation: hero-fade 0.9s var(--ease-out-expo) both;
+    animation-delay: calc(240ms + var(--line, 0) * 90ms);
+  }
+}
+
+@keyframes hero-rise {
+  from {
+    transform: translate3d(0, 105%, 0);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes hero-fade {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- Capability marquee ---------- */
+@keyframes marquee {
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.marquee-track {
+  animation: marquee 48s linear infinite;
+}
+
+.marquee:hover .marquee-track,
+.marquee:focus-within .marquee-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+}
+
+/* ---------- Page transitions (View Transitions API, progressive) ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root) {
+    animation: 180ms var(--ease-standard) both vt-out;
+  }
+  ::view-transition-new(root) {
+    animation: 320ms var(--ease-out-expo) both vt-in;
+  }
+}
+
+@keyframes vt-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes vt-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 8px, 0);
+  }
+}
+
+/* ---------- Long-form content (articles, case studies, legal) ---------- */
+.prose-forge {
+  color: var(--color-muted);
+  font-size: 1.0625rem;
+  line-height: 1.75;
+}
+
+.prose-forge > * + * {
+  margin-top: 1.25em;
+}
+
+.prose-forge h2 {
+  margin-top: 2.4em;
+  color: var(--color-text);
+  font-size: var(--text-h3);
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  scroll-margin-top: calc(var(--spacing-header) + 1.5rem);
+}
+
+.prose-forge h3 {
+  margin-top: 1.8em;
+  color: var(--color-text);
+  font-size: 1.25rem;
+  line-height: 1.3;
+  scroll-margin-top: calc(var(--spacing-header) + 1.5rem);
+}
+
+.prose-forge h2 + *,
+.prose-forge h3 + * {
+  margin-top: 0.75em;
+}
+
+.prose-forge strong {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.prose-forge a {
+  color: var(--color-accent-soft);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+}
+
+.prose-forge a:hover {
+  color: var(--color-text);
+}
+
+.prose-forge ul,
+.prose-forge ol {
+  padding-left: 1.25em;
+}
+
+.prose-forge ul {
+  list-style: none;
+}
+
+.prose-forge ul > li {
+  position: relative;
+}
+
+.prose-forge ul > li::before {
+  content: "";
+  position: absolute;
+  left: -1.1em;
+  top: 0.72em;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-accent);
+}
+
+.prose-forge ol {
+  list-style: decimal;
+}
+
+.prose-forge ol > li::marker {
+  color: var(--color-accent);
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+}
+
+.prose-forge li + li {
+  margin-top: 0.5em;
+}
+
+.prose-forge code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+}
+
+.prose-forge pre {
+  overflow-x: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  background: var(--color-surface);
+  padding: 1.25rem 1.5rem;
+  font-size: 0.875rem;
+  line-height: 1.7;
+}
+
+.prose-forge pre code {
+  border: 0;
+  padding: 0;
+  background: none;
+  font-size: inherit;
+}
+
+.prose-forge table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.prose-forge th,
+.prose-forge td {
+  border-bottom: 1px solid var(--color-border);
+  padding: 0.75rem 1rem 0.75rem 0;
+  text-align: left;
+  vertical-align: top;
+}
+
+.prose-forge th {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.prose-forge blockquote {
+  border-left: 2px solid var(--color-accent);
+  padding-left: 1.25rem;
+  color: var(--color-text);
+}
+
+.prose-forge img {
+  border-radius: var(--radius-card);
+  border: 1px solid var(--color-border);
+}
+
+.prose-forge hr {
+  border-color: var(--color-border);
 }

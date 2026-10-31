@@ -54,7 +54,12 @@ export function Button(props: ButtonProps) {
 
   if ("to" in props && props.to) {
     return (
-      <Link to={props.to} className={classes} prefetch="intent">
+      <Link
+        to={props.to}
+        className={cn("group", classes)}
+        prefetch="intent"
+        viewTransition
+      >
         {children}
       </Link>
     );
@@ -77,7 +82,7 @@ export function Button(props: ButtonProps) {
     ...rest
   } = props as AsButton;
   return (
-    <button type="button" {...rest} className={classes}>
+    <button type="button" {...rest} className={cn("group", classes)}>
       {children}
     </button>
   );

@@ -21,11 +21,12 @@ const FORBIDDEN = [
   { pattern: /(^|\/)\.env($|\.(?!example$))/, reason: "environment file" },
   { pattern: /(^|\/)node_modules\//, reason: "dependencies" },
   { pattern: /(^|\/)(build|\.react-router|exports)\//, reason: "build output" },
-  {
-    pattern: /^server\/config\/(?!mail\.example\.php$).+/,
-    reason: "server config with credentials",
-  },
+  { pattern: /(^|\/)mail-config\.php$/, reason: "mail credentials" },
   { pattern: /(^|\/)mail\.php$/, reason: "mail credentials" },
+  {
+    pattern: /^server\/private\/storage\/(?!\.gitkeep$|\.htaccess$).+/,
+    reason: "server runtime data",
+  },
   { pattern: /\.(pem|key|p12|pfx|crt)$/i, reason: "key or certificate" },
   { pattern: /(^|\/)id_(rsa|ed25519|ecdsa)(\.pub)?$/, reason: "SSH key" },
 ];

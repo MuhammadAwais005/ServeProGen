@@ -1,18 +1,22 @@
 # Dependencies
 node_modules/
 
-# Build output and packaged ZIPs
+# Build output, test output and packaged ZIPs
 build/
 .react-router/
 exports/
+test-results/
+playwright-report/
 *.zip
 
 # Environment and secrets: never commit credentials
 .env
 .env.*
 !.env.example
-server/config/*.php
-!server/config/mail.example.php
+server/private/mail-config.php
+server/private/storage/*
+!server/private/storage/.gitkeep
+!server/private/storage/.htaccess
 *.pem
 *.key
 *.p12

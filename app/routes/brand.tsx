@@ -6,28 +6,11 @@ import { Card } from "~/components/ui/Card";
 import { Container } from "~/components/ui/Container";
 import { SelectField, TextAreaField, TextField } from "~/components/ui/Field";
 import { SectionHeader } from "~/components/ui/SectionHeader";
-import { getAllProjects } from "~/content/content.server";
+import { projects as visibleProjects } from "~/content";
 import { processStages } from "~/content/process";
 import { projectStatuses } from "~/content/status";
 import { services } from "~/content/services";
 import { pageMeta } from "~/lib/seo";
-import type { Route } from "./+types/brand";
-
-/** Runs at build time only; the page receives plain JSON. */
-export function loader() {
-  return {
-    projects: getAllProjects().map(
-      ({ slug, title, category, status, published, unconfirmed }) => ({
-        slug,
-        title,
-        category,
-        status,
-        published,
-        unconfirmed,
-      }),
-    ),
-  };
-}
 
 export const meta = () =>
   pageMeta({
@@ -71,8 +54,8 @@ function Block({ id, children }: { id: string; children: ReactNode }) {
   );
 }
 
-export default function BrandPage({ loaderData }: Route.ComponentProps) {
-  const { projects } = loaderData;
+export default function BrandPage() {
+  const projects = visibleProjects;
   return (
     <>
       <section className="relative isolate overflow-hidden pt-header">

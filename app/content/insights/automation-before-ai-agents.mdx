@@ -1,0 +1,41 @@
+---
+# SAMPLE DRAFT for layout testing. `sample: true` means it can never be published.
+title: "Map the Process Before You Add an AI Agent"
+description: Why the most reliable automation projects start with a whiteboard, not a model, and how to decide where an AI agent actually helps.
+category: Automation
+tags: [Automation, AI Agents, Workflows]
+sample: true
+published: false
+---
+
+AI agents are a powerful tool, but they are not a strategy. The automation projects that hold up in daily use start by understanding the process as it really happens.
+
+## Write down the real workflow
+
+Ask the people who do the work to walk through it step by step. The documented process and the real one are rarely the same: there are workarounds, exceptions and steps that exist only in someone's head.
+
+## Separate rules from judgment
+
+Most steps fall into one of three groups:
+
+1. **Deterministic rules:** "if the invoice total is over the limit, route it for approval." Ordinary code handles these perfectly.
+2. **Pattern recognition:** "which category does this support request belong to?" A model can help here.
+3. **Judgment calls:** "should we make an exception for this customer?" Keep a person in the loop.
+
+An AI agent belongs mainly in the second group.
+
+## Simplify before you automate
+
+Automating a broken process makes it fail faster. Remove unnecessary steps and duplicate data entry first; sometimes that alone saves most of the time.
+
+## Build in visibility
+
+Every automated step should log what it did and report failures. A workflow that fails silently is worse than a manual one, because nobody knows it stopped.
+
+## Give agents clear boundaries
+
+When an agent is the right tool, define which actions it can take, what it must never do, and when it should hand off to a person. Start with read-only or suggest-only modes before letting it act.
+
+## Takeaways
+
+Map, simplify, automate the rules, and use AI where patterns need recognising. That order produces automation people trust.

@@ -1,0 +1,51 @@
+---
+# SAMPLE DRAFT for layout testing. `sample: true` means it can never be published.
+# Rewrite or replace it with a genuine article, remove `sample`, add a date, then publish.
+title: "From Dataset to Edge: Planning a Computer Vision Project"
+description: How to scope an object detection project when the model has to run on embedded hardware, from data collection to evaluation.
+category: Computer Vision
+tags: [Object Detection, Edge AI, YOLO]
+sample: true
+published: false
+---
+
+Computer vision projects rarely fail because of the model. They fail because the problem was vague, the data didn't match the real world, or the model couldn't run where it was needed. Planning for those three risks up front changes everything that follows.
+
+## Start with the decision, not the model
+
+Before choosing an architecture, write down the decision the model supports. "Detect passengers" is a task; "tell the vehicle system how many seats are occupied, every second, at night as well as by day" is a decision with constraints.
+
+That sentence already tells you about lighting conditions, latency, and which mistakes matter most.
+
+## Data that looks like deployment
+
+The training set should look like the images the camera will actually see:
+
+- The same camera position, lens and resolution.
+- Every lighting condition the system will face.
+- Edge cases: partial occlusion, unusual postures, empty scenes.
+
+Annotation rules need to be written down before labelling starts. Two annotators drawing boxes differently will quietly limit how good any model can become.
+
+## Choosing a model for the hardware
+
+On an embedded processor, the hardware is a design input, not an afterthought. Compact detectors such as YOLOX-S trade a little accuracy for a much smaller footprint.
+
+```python
+# Pseudocode: compare candidates on the target constraints, not just accuracy
+for candidate in ["yolox-s", "yolox-tiny"]:
+    model = train(candidate, train_split)
+    report(candidate, evaluate(model, test_split), latency_on_target(model))
+```
+
+## Evaluate on data the model has never seen
+
+Keep a test split aside from the start and don't tune against it. Report metrics per condition (day, night, occlusion) rather than a single average, because averages hide the failures that matter.
+
+## Plan the path to deployment
+
+Export formats, quantisation and the runtime on the device all affect results. Testing on the real hardware early avoids a late surprise where the model that looked best on a workstation is too slow in the vehicle.
+
+## Takeaways
+
+Good computer vision engineering is mostly good problem framing and data discipline. The model is the last decision, not the first.

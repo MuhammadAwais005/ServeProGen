@@ -1,13 +1,49 @@
 ---
+# Source: founder's master brief (31 Oct 2026). In progress.
+# Never add mAP, accuracy, inference speed or deployment claims until measured.
 title: Passenger Detection using YOLOX-S
-category: Computer vision · object detection
-summary: "[TO CONFIRM] One or two sentences on the detection task, data and use case."
-status: unconfirmed
+category: Computer Vision · Object Detection
+summary: An in-progress computer vision project training a YOLOX-S object detector to detect passengers in vehicle camera images, with deployment on a vehicle edge ECU as the target.
+status: in-development
 services: [ai-ml]
-stack: [YOLOX-S]
+areas: [computer-vision, ai-ml]
+stack: [Python, YOLOX-S, Deep Learning]
+features:
+  - Passenger detection in vehicle camera images
+  - Dataset preparation and annotation
+  - Model training and evaluation
+  - Edge ECU deployment considerations
+visual: detection
+unconfirmed: []
 featured: true
 published: false
 order: 30
 ---
 
-{/* Case study body to be written once the facts are confirmed. Report only measured metrics. */}
+## Overview
+
+This project develops a passenger detection model for in-vehicle camera systems, using the YOLOX-S object detector. The intended target is a vehicle's edge ECU, which shapes model choice from the start. The work is **in progress**.
+
+## Problem statement
+
+Detecting passengers reliably from in-vehicle camera images, within the compute limits of an embedded automotive processor.
+
+## Dataset and annotation
+
+Images are collected and annotated with bounding boxes for passengers, then organised into training, validation and test splits.
+
+## Training methodology
+
+YOLOX-S, a compact member of the YOLOX family, is trained on the annotated dataset. Its small size suits edge hardware.
+
+## Model evaluation
+
+The model will be evaluated on held-out data. Results will be published here only once they have been measured.
+
+## Edge deployment considerations
+
+Model size, inference latency and the target ECU's hardware constraints guide the choice of architecture and any optimisation steps.
+
+## Status
+
+In progress.
