@@ -1,0 +1,6 @@
+build
+.react-router
+node_modules
+package-lock.json
+public/.htaccess
+*.mdx

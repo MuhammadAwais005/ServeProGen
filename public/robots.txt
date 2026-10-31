@@ -1,0 +1,7 @@
+# Pre-launch: block all crawlers (local and staging).
+# LAUNCH CHECKLIST (Phase 5): replace with
+#   User-agent: *
+#   Allow: /
+#   Sitemap: https://serveprogen.com/sitemap.xml
+User-agent: *
+Disallow: /

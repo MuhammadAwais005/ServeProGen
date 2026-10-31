@@ -1,0 +1,84 @@
+/*
+ * ServeProGen design tokens
+ * Single source of truth for color, type, radius, motion and layout.
+ * Tailwind v4 turns every --color-*, --text-*, --font-*, --radius-* and
+ * --shadow-* variable below into utilities (bg-surface, text-muted, …).
+ *
+ * Contrast on --color-bg (#08090D), WCAG 2.2:
+ *   text 18.25:1 · muted 7.77:1 · accent 7.21:1 · accent-soft 9.48:1
+ *   border-strong 4.12:1 (controls need 3:1) · danger 7.19:1 · success 11.42:1
+ *   on-accent text on accent 7.21:1 (white on accent fails at 2.53:1)
+ */
+
+@theme {
+  /* Approved brand palette */
+  --color-bg: #08090d;
+  --color-surface: #11131a;
+  --color-text: #f5f5f5;
+  --color-muted: #a1a1aa;
+  --color-accent: #ff702e;
+  --color-accent-soft: #ff9a55;
+  --color-border: #292b34; /* decorative dividers only */
+
+  /* Functional tokens (accessibility and states) */
+  --color-surface-raised: #171a23; /* hover / raised surfaces */
+  --color-border-strong: #71717a; /* form controls, 3:1+ */
+  --color-on-accent: #08090d; /* text on orange */
+  --color-danger: #f87171; /* form errors */
+  --color-success: #4ade80; /* form success, "live" status */
+
+  /* Fonts */
+  --font-display: "Clash Display", "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-sans:
+    "Geist Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  /* Fluid type scale (phone → large desktop) */
+  --text-display: clamp(3rem, 1.9rem + 5.5vw, 7.5rem); /* 48 → 120px */
+  --text-display--line-height: 0.95;
+  --text-display--letter-spacing: -0.035em;
+  --text-h1: clamp(2.5rem, 1.8rem + 3.5vw, 4.5rem); /* 40 → 72px */
+  --text-h1--line-height: 1.02;
+  --text-h1--letter-spacing: -0.03em;
+  --text-h2: clamp(2rem, 1.5rem + 2.5vw, 3.25rem); /* 32 → 52px */
+  --text-h2--line-height: 1.08;
+  --text-h2--letter-spacing: -0.025em;
+  --text-h3: clamp(1.375rem, 1.2rem + 0.8vw, 1.75rem); /* 22 → 28px */
+  --text-h3--line-height: 1.2;
+  --text-h3--letter-spacing: -0.015em;
+  --text-lead: clamp(1.125rem, 1.05rem + 0.4vw, 1.375rem); /* 18 → 22px */
+  --text-lead--line-height: 1.55;
+  --text-body: 1.0625rem; /* 17px */
+  --text-body--line-height: 1.65;
+  --text-small: 0.9375rem; /* 15px */
+  --text-small--line-height: 1.55;
+  --text-label: 0.75rem; /* 12px mono labels */
+  --text-label--line-height: 1;
+  --text-label--letter-spacing: 0.14em;
+
+  /* Radius */
+  --radius-field: 6px;
+  --radius-card: 12px;
+  --radius-panel: 20px;
+
+  /* Elevation: light, not drop shadows */
+  --shadow-glow: 0 0 40px rgb(255 112 46 / 0.25);
+  --shadow-glow-sm: 0 0 20px rgb(255 112 46 / 0.2);
+
+  /* Motion */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+
+  /* Layout */
+  --container-site: 80rem; /* 1280px */
+  --spacing-header: 4.5rem; /* 72px desktop header */
+}
+
+:root {
+  /* Durations for CSS transitions; mirrored in app/lib/motion.ts for JS. */
+  --duration-fast: 150ms;
+  --duration-base: 250ms;
+  --duration-reveal: 600ms;
+  --duration-slow: 900ms;
+  --stagger: 60ms;
+}

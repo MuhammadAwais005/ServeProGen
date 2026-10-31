@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+
+# Build output
+build/
+.react-router/
+
+# Environment and secrets: never commit credentials
+.env
+.env.*
+!.env.example
+server/config/*.php
+!server/config/mail.example.php
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
