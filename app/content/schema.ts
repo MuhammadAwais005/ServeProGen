@@ -1,11 +1,11 @@
 import { z } from "zod";
-import { serviceSlugs } from "./services";
+import { serviceSlugs } from "./services.ts";
 import {
   articleCategories,
   projectAreas,
   projectStatuses,
   projectVisuals,
-} from "./status";
+} from "./status.ts";
 
 /**
  * Content schemas. Every MDX file is validated against these when the dev server

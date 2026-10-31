@@ -2,8 +2,8 @@
 @import "@fontsource-variable/geist";
 @import "@fontsource-variable/geist-mono";
 @import "./styles/tokens.css";
-/* Clash Display @font-face: injected by the displayFont plugin in vite.config.ts
-   (imported from root.tsx) only when public/fonts/ClashDisplay-Variable.woff2 exists. */
+/* Clash Display @font-face: appended to this file by displayFontPlugin
+   (config/vite-plugins.ts) only when public/fonts/ClashDisplay-Variable.woff2 exists. */
 
 /* ---------- Base ---------- */
 @layer base {
@@ -134,63 +134,83 @@
 }
 
 /* ---------- Reveal system ----------
- * Content is visible by default (no JS, crawlers, reduced motion).
+ * Content is never hidden: reveals only animate position, so text is readable
+ * from the first paint (good for LCP, accessibility and crawlers).
  * root.tsx adds .js to <html> before paint; the RevealObserver sets
- * data-revealed when an element enters the viewport. A failsafe animation
- * reveals everything after 2.5s in case JavaScript fails to run. */
+ * data-revealed when an element enters the viewport. A failsafe settles
+ * everything after 2.5s in case JavaScript fails to run. */
 @media (prefers-reduced-motion: no-preference) {
   .js [data-reveal]:not([data-revealed]) {
-    opacity: 0;
-    transform: translate3d(0, 24px, 0);
+    transform: translate3d(0, 32px, 0);
     animation: reveal-failsafe 0.01s 2.5s forwards;
   }
   .js [data-reveal] {
-    transition:
-      opacity var(--duration-slow) var(--ease-out-expo),
-      transform var(--duration-slow) var(--ease-out-expo);
+    transition: transform 1.1s var(--ease-out-expo);
     transition-delay: calc(var(--reveal-index, 0) * var(--stagger));
   }
 }
 
 @keyframes reveal-failsafe {
   to {
-    opacity: 1;
     transform: none;
   }
 }
 
-/* ---------- Hero intro (pure CSS: no JavaScript needed to see the text) ---------- */
+/* Sized so the resting state (position 0) shows the white→orange gradient
+ * and the far end is plain text: the intro sweeps from white into orange. */
+.hero-sweep {
+  background-size: 220% 100%;
+  background-position: 0 0;
+}
+
+/* ---------- Hero intro (pure CSS: no JavaScript needed to see the text) ----------
+ * The headline is visible from the first paint (it is the page's largest content,
+ * so hiding it would delay LCP). Each line settles upward from a small offset
+ * while the orange gradient sweeps once across "Building Possibilities."
+ * Supporting text and buttons fade in quickly behind it. */
 @media (prefers-reduced-motion: no-preference) {
   .hero-line {
     display: block;
-    overflow: hidden;
-    padding-bottom: 0.08em;
-    margin-bottom: -0.08em;
   }
   .hero-line > span {
     display: block;
-    animation: hero-rise 1s var(--ease-out-expo) both;
-    animation-delay: calc(var(--line, 0) * 110ms);
+    animation: hero-settle 1.1s var(--ease-out-expo) both;
+    animation-delay: calc(var(--line, 0) * 90ms);
+  }
+  .hero-sweep {
+    background-size: 220% 100%;
+    animation:
+      hero-settle 1.1s var(--ease-out-expo) both,
+      hero-sweep 1.8s var(--ease-out-expo) 0.15s both;
   }
   .hero-fade {
-    animation: hero-fade 0.9s var(--ease-out-expo) both;
-    animation-delay: calc(240ms + var(--line, 0) * 90ms);
+    animation: hero-fade 0.7s var(--ease-out-expo) both;
+    animation-delay: calc(120ms + var(--line, 0) * 70ms);
   }
 }
 
-@keyframes hero-rise {
+@keyframes hero-settle {
   from {
-    transform: translate3d(0, 105%, 0);
+    transform: translate3d(0, 0.18em, 0);
   }
   to {
     transform: none;
   }
 }
 
+@keyframes hero-sweep {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0 0;
+  }
+}
+
 @keyframes hero-fade {
   from {
     opacity: 0;
-    transform: translate3d(0, 12px, 0);
+    transform: translate3d(0, 10px, 0);
   }
   to {
     opacity: 1;

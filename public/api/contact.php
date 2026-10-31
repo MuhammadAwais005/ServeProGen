@@ -3,7 +3,7 @@
  * ServeProGen contact endpoint: POST /api/contact.php (JSON in, JSON out).
  *
  * Mirrors the rules in app/lib/contact.ts. Keep both in sync; the unit test
- * tests/contact-sync.test.ts fails if the option lists drift apart.
+ * tests/unit/contact.test.ts fails if the option lists drift apart.
  *
  * Secrets and PHPMailer live in a private folder OUTSIDE public_html:
  *   <domain root>/private/mail-config.php

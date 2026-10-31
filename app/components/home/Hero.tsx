@@ -42,7 +42,7 @@ export function Hero({ hasWork }: { hasWork: boolean }) {
               <span>Engineering Intelligence.</span>
             </span>
             <span className="hero-line" style={{ "--line": 1 } as CSSProperties}>
-              <span className="bg-[linear-gradient(100deg,var(--color-text)_10%,var(--color-accent-soft)_55%,var(--color-accent)_95%)] bg-clip-text text-transparent">
+              <span className="hero-sweep bg-[linear-gradient(100deg,var(--color-text)_4.5%,var(--color-accent-soft)_25%,var(--color-accent)_43%,var(--color-text)_62%)] bg-clip-text text-transparent">
                 Building Possibilities.
               </span>
             </span>

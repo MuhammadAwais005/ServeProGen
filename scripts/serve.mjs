@@ -15,6 +15,7 @@ import { spawn, spawnSync } from "node:child_process";
 import { createReadStream, existsSync, statSync } from "node:fs";
 import { createServer, request } from "node:http";
 import { extname, join, normalize, resolve } from "node:path";
+import { createGzip } from "node:zlib";
 
 const args = process.argv.slice(2);
 const port = Number(args[args.indexOf("--port") + 1]) || 4173;
@@ -57,17 +58,52 @@ if (hasPhp) {
     },
     stdio: "ignore",
   });
-  process.on("exit", () => php?.kill());
-  process.on("SIGINT", () => process.exit(0));
+  let stopping = false;
+  // If PHP exits on its own (usually because the port is taken by a stale server),
+  // say so loudly: a leftover PHP process would answer with the wrong settings.
+  php.on("exit", (code) => {
+    if (stopping) return;
+    console.error(
+      `\n✖ PHP server on port ${phpPort} stopped (exit code ${code}).` +
+        `\n  Another process may already be using that port; the contact form will not work.` +
+        `\n  Stop it, or run this server with a different --port.\n`,
+    );
+  });
+  // Always take the PHP child down with us, however this process is stopped.
+  process.on("exit", () => {
+    stopping = true;
+    php?.kill();
+  });
+  for (const signal of ["SIGINT", "SIGTERM", "SIGHUP"]) {
+    process.on(signal, () => process.exit(0));
+  }
 }
 
-const send = (res, status, file, headers = {}) => {
+const compressible = new Set([
+  ".html",
+  ".js",
+  ".css",
+  ".json",
+  ".svg",
+  ".txt",
+  ".xml",
+  ".data",
+]);
+
+/** Sends a file, gzip-compressed like Hostinger does for text assets. */
+const send = (req, res, status, file, headers = {}) => {
+  const gzip =
+    compressible.has(extname(file)) &&
+    /\bgzip\b/.test(req.headers["accept-encoding"] ?? "");
   res.writeHead(status, {
     "Content-Type": types[extname(file)] ?? "application/octet-stream",
     "X-Content-Type-Options": "nosniff",
+    Vary: "Accept-Encoding",
+    ...(gzip && { "Content-Encoding": "gzip" }),
     ...headers,
   });
-  createReadStream(file).pipe(res);
+  const stream = createReadStream(file);
+  (gzip ? stream.pipe(createGzip()) : stream).pipe(res);
 };
 
 createServer((req, res) => {
@@ -117,12 +153,12 @@ createServer((req, res) => {
   const hit = candidates.find((c) => existsSync(c) && statSync(c).isFile());
   if (hit) {
     const immutable = hit.includes(`${join(root, "assets")}`);
-    send(res, 200, hit, {
+    send(req, res, 200, hit, {
       "Cache-Control": immutable ? "public, max-age=31536000, immutable" : "no-cache",
     });
     return;
   }
-  send(res, 404, join(root, "404", "index.html"), { "Cache-Control": "no-cache" });
+  send(req, res, 404, join(root, "404", "index.html"), { "Cache-Control": "no-cache" });
 }).listen(port, () => {
   console.log(`ServeProGen build → http://localhost:${port}`);
   console.log(

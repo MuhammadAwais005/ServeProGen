@@ -1,6 +1,6 @@
 import type { Config } from "@react-router/dev/config";
-import { visibleEntries } from "./config/content";
-import { serviceSlugs } from "./app/content/services";
+import { visibleEntries } from "./config/content.ts";
+import { serviceSlugs } from "./app/content/services.ts";
 
 /**
  * ServeProGen is deployed as static files on Hostinger shared hosting.

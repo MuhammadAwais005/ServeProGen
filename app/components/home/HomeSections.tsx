@@ -6,8 +6,17 @@ import { ProjectCard } from "~/components/work/ProjectCard";
 import type { Article, Project } from "~/content";
 import { differentiators } from "~/content/site";
 
+/** Two-digit section number, e.g. 5 → "05". */
+const num = (n: number) => String(n).padStart(2, "0");
+
 /** Selected work: only shown when there are visible projects. */
-export function SelectedWork({ projects }: { projects: Project[] }) {
+export function SelectedWork({
+  projects,
+  index,
+}: {
+  projects: Project[];
+  index: number;
+}) {
   if (projects.length === 0) return null;
   return (
     <section
@@ -18,7 +27,7 @@ export function SelectedWork({ projects }: { projects: Project[] }) {
         <div className="mb-14 flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
           <div className="flex max-w-2xl flex-col gap-5">
             <p className="text-label text-muted" {...reveal()}>
-              <span className="text-accent">05</span> / Selected work
+              <span className="text-accent">{num(index)}</span> / Selected work
             </p>
             <h2 id="work-title" className="text-h2" {...reveal(1)}>
               From ideas to intelligent products.
@@ -44,7 +53,7 @@ export function SelectedWork({ projects }: { projects: Project[] }) {
 }
 
 /** Why ServeProGen: real differentiators, no statistics. */
-export function WhyServeProGen() {
+export function WhyServeProGen({ index }: { index: number }) {
   return (
     <section
       aria-labelledby="why-title"
@@ -57,7 +66,7 @@ export function WhyServeProGen() {
       <Container className="grid gap-14 lg:grid-cols-[0.8fr_1.4fr] lg:gap-20">
         <div className="flex flex-col gap-5 lg:sticky lg:top-28 lg:self-start">
           <p className="text-label text-muted" {...reveal()}>
-            <span className="text-accent">06</span> / Why ServeProGen
+            <span className="text-accent">{num(index)}</span> / Why ServeProGen
           </p>
           <h2 id="why-title" className="text-h2" {...reveal(1)}>
             Why build with us?
@@ -90,7 +99,13 @@ export function WhyServeProGen() {
 }
 
 /** Insights preview: hidden until at least three published articles exist. */
-export function InsightsPreview({ articles }: { articles: Article[] }) {
+export function InsightsPreview({
+  articles,
+  index,
+}: {
+  articles: Article[];
+  index: number;
+}) {
   if (articles.length < 3) return null;
   return (
     <section
@@ -101,7 +116,7 @@ export function InsightsPreview({ articles }: { articles: Article[] }) {
         <div className="mb-14 flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
           <div className="flex max-w-2xl flex-col gap-5">
             <p className="text-label text-muted" {...reveal()}>
-              <span className="text-accent">07</span> / Insights
+              <span className="text-accent">{num(index)}</span> / Insights
             </p>
             <h2 id="insights-title" className="text-h2" {...reveal(1)}>
               Explore ideas. Discover innovation.

@@ -26,6 +26,12 @@ export default function Home() {
   // Hidden until three published (non-sample) articles exist, even in preview.
   const insights = homepageArticles();
 
+  // Sections 05 and 07 are conditional; number the visible ones without gaps.
+  const showWork = work.length > 0;
+  const workIndex = 5;
+  const whyIndex = showWork ? 6 : 5;
+  const insightsIndex = whyIndex + 1;
+
   return (
     <>
       <Hero hasWork={projects.some((p) => p.published)} />
@@ -34,9 +40,9 @@ export default function Home() {
       <ServicesBento />
       <AiSpotlight />
       <ProcessPreview />
-      <SelectedWork projects={work} />
-      <WhyServeProGen />
-      <InsightsPreview articles={insights} />
+      <SelectedWork projects={work} index={workIndex} />
+      <WhyServeProGen index={whyIndex} />
+      <InsightsPreview articles={insights} index={insightsIndex} />
       <CtaBand />
     </>
   );

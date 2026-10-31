@@ -3,97 +3,118 @@
 Official website of **ServeProGen**, a premium AI & software engineering studio.
 _Engineering Intelligence. Building Possibilities._
 
-React 19 + TypeScript, React Router 8 (static pre-rendering), Vite 8, Tailwind CSS 4.
+React 19 · TypeScript · React Router 8 (static pre-rendering) · Vite 8 · Tailwind CSS 4 ·
+GSAP · Motion · Lenis · Three.js / React Three Fiber · MDX + Zod · PHP + PHPMailer.
 Built as static files for Hostinger shared hosting.
 
-## Requirements
+## Quick start
 
-- Node.js 22 (see `.nvmrc`)
-- npm 10+
-
-## Getting started
+Requirements: **Node.js 22** (see `.nvmrc`), npm 10+, Git. PHP 8 is optional (only
+needed to test the contact form against the real PHP endpoint locally).
 
 ```bash
 npm install
-cp .env.example .env.local   # optional; defaults are safe for local work
-npm run dev                  # http://localhost:5173
+npm run dev            # http://localhost:5173 (drafts visible, marked "Draft")
 ```
 
-Optional: add the Clash Display font, see `public/fonts/README.md`.
+To see exactly what visitors will get:
+
+```bash
+npm run build          # production build: published content only
+npm run serve          # http://localhost:4173, behaves like Hostinger (.htaccess rules)
+```
+
+Works the same in PowerShell, Command Prompt, macOS and Linux.
 
 ## Scripts
 
-| Command             | What it does                                                  |
-| ------------------- | ------------------------------------------------------------- |
-| `npm run dev`       | Local dev server with hot reload                              |
-| `npm run build`     | Production build; pre-renders every route into `build/client` |
-| `npm run preview`   | Serves the production build locally                           |
-| `npm run typecheck` | Generates route types and runs TypeScript                     |
-| `npm run lint`      | ESLint, including accessibility rules                         |
-| `npm run format`    | Formats code with Prettier                                    |
-| `npm run check`     | Everything CI runs, in order                                  |
-| `npm run package`   | Clean source ZIP of the last commit into `exports/`           |
+| Command                           | What it does                                                                                                                  |
+| --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `npm run dev`                     | Development server with hot reload. Shows drafts with a "Draft" banner.                                                       |
+| `npm run build`                   | Production build into `build/client`. Published content only, no internal pages.                                              |
+| `npm run build:preview`           | Build that includes drafts and `/brand`, always `noindex`. For review only.                                                   |
+| `npm run serve`                   | Serves the last build like Hostinger does (clean URLs, 404, gzip, PHP for `/api`).                                            |
+| `npm run typecheck`               | Route types + TypeScript.                                                                                                     |
+| `npm run lint`                    | ESLint, including accessibility and React Hooks rules.                                                                        |
+| `npm run format` / `format:check` | Prettier.                                                                                                                     |
+| `npm test`                        | Unit tests (Vitest): content rules, SEO, contact form sync with PHP.                                                          |
+| `npm run test:e2e`                | Browser tests (Playwright) on the production build. Run `npm run build` first. First time: `npx playwright install chromium`. |
+| `npm run check`                   | Typecheck, lint, format, unit tests and build, in that order.                                                                 |
+| `npm run package`                 | Clean ZIP of the **source** (last commit) into `exports/`. Refuses if secrets are committed.                                  |
+| `npm run package:hostinger`       | ZIP of the **built site** + private folder for manual upload to Hostinger.                                                    |
 
-## Where things live
+## Editing content
 
-```
-app/
-  content/          ← edit text here: company, services, process, projects, articles
-    site.ts           company facts, navigation, contact details (null = hidden)
-    services.ts       the five services
-    process.ts        the six process stages (single source of truth)
-    projects/*.mdx    one file per project; set published: true when confirmed
-    insights/*.mdx    one file per article
-  components/       ui/, layout/, brand/, sections/
-  routes/           one file per page
-  styles/tokens.css design tokens
-public/             static files copied as-is (.htaccess, icons, logo files)
-server/             contact form server code and config template (no secrets)
-```
+Everything you'd want to change lives in `app/content/`. No component edits needed.
 
-### Adding a project
+| File             | What it controls                                                                                                                                  |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `site.ts`        | Company facts, navigation, contact details, social links, founder block, values, differentiators, capability strip, tech ecosystem, budget ranges |
+| `services.ts`    | The five services: summaries, problems, capabilities, approach, FAQs                                                                              |
+| `process.ts`     | The six process stages (Discover, Strategize, Design, Engineer, Validate, Launch & Evolve)                                                        |
+| `projects/*.mdx` | One file per project / case study (`/work/<file-name>`)                                                                                           |
+| `insights/*.mdx` | One file per article (`/insights/<file-name>`)                                                                                                    |
+| `legal/*.mdx`    | Privacy Policy and Terms of Service                                                                                                               |
 
-1. Copy `app/content/projects/_template.mdx` to `app/content/projects/my-project.mdx`.
-2. Fill in the frontmatter and write the case study below it.
-3. List any field you haven't verified in `unconfirmed: [...]`.
-4. Set `published: true` only when every fact is confirmed. The build stops with a
-   message naming the file and field if a published project has an `unconfirmed`
-   list, an unconfirmed status, or `[TO CONFIRM]` text.
+Unknown facts stay `null` in `site.ts`; the site hides them instead of guessing.
 
-Published projects are pre-rendered at `/work/<file-name>` automatically.
+### Publishing a project
 
-### Adding an article
+1. Copy `app/content/projects/_template.mdx` to `app/content/projects/<name>.mdx`.
+2. Fill in the frontmatter and the case study. Real screenshots go in
+   `public/projects/<name>/` and are listed under `screenshots`.
+3. Anything not yet verified goes in `unconfirmed: [...]`.
+4. Set `published: true`. The build **stops with a clear message** if a published
+   project still has an `unconfirmed` list, status `unconfirmed`, or `[TO CONFIRM]` text.
 
-Copy `app/content/insights/_template.mdx`, write, set `published: true`.
-It is pre-rendered at `/insights/<file-name>` automatically.
+Published projects appear on `/work`, get their own page, are added to the sitemap,
+and (if `featured: true`) show in the homepage's "Selected work" section.
+
+### Publishing an article
+
+Copy `app/content/insights/_template.mdx`, write it, set the real `date`, then
+`published: true`. Reading time and table of contents are generated automatically.
+The three existing articles are labelled `sample: true` (layout testing) and can never
+be published. The homepage Insights section appears once three real articles exist.
 
 ### Adding a page
 
-Add the route in `app/routes.ts`. Every route without a URL parameter is
-pre-rendered automatically; nothing else to register.
+Create the route file in `app/routes/` and register it in `app/routes.ts`. Static routes
+are pre-rendered automatically.
 
-## Internal pages
+## Project structure
 
-`/brand` is a review page (logo, tokens, components, draft content status). It is
-included in local and staging builds and removed from production builds:
-
-```bash
-INCLUDE_INTERNAL_PAGES=false npm run build
+```
+app/
+  content/        ← all editable content (see above)
+  routes/         one file per page
+  components/
+    home/         homepage sections (Hero, ServicesBento, AiSpotlight, …)
+    hero/         Neural Lattice 3D scene (lazy-loaded) and its loader
+    layout/       header, footer, skip link, reveal and smooth-scroll systems
+    ui/           Button, Card, Badge, form fields, page blocks
+    work/ insights/ contact/ legal/ brand/   page-specific components
+  lib/            SEO, contact form schema, motion tokens
+  hooks/          device tier, reduced motion, scroll helpers
+  styles/tokens.css   design tokens (colors, type scale, spacing, motion)
+config/           build-time content index and Vite plugins
+public/           static files: .htaccess, api/contact.php, logos, icons, OG image
+server/private/   PHPMailer + mail-config template (deployed outside public_html)
+scripts/          build, serve and packaging scripts
+tests/            unit (Vitest) and e2e (Playwright) tests
+docs/DEPLOYMENT.md   Hostinger staging, launch, DNS/SSL, email and rollback guide
 ```
 
-## Sharing the code
+## Quality bar
 
-Use `npm run package`. It zips only committed files (no `.git`, `node_modules`,
-build output or real `.env` / credential files) and refuses to run if a secret-looking
-file is committed. Uncommitted changes are not included; commit first.
-
-## Content rules
-
-No testimonials, clients, statistics or results unless they are real and confirmed.
-Unknown contact details stay `null` in `site.ts`; the UI hides them.
+Every change should keep these green: `npm run check` and `npm run test:e2e`.
+The browser tests cover every public page (with an axe WCAG 2.2 AA scan), broken
+links, the 404, drafts never shipping, keyboard and mobile navigation, the contact
+form against the real PHP endpoint, no-JavaScript and reduced-motion fallbacks, and
+layouts from 360 px to 1920 px.
 
 ## Deployment
 
-Not yet. Plan: GitHub → CI → optional Hostinger staging subdomain → production
-on the purchased domain, each step only after approval.
-Secrets (SMTP) never go in this repository; see `server/README.md`.
+See **[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)**. In short: stage on a free Hostinger
+subdomain, then launch on the purchased domain. Secrets (SMTP) only ever live on the
+server in `private/mail-config.php`, never in Git.

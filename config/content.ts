@@ -3,7 +3,7 @@ import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { parse } from "yaml";
 import { z } from "zod";
-import { articleSchema, projectSchema } from "../app/content/schema";
+import { articleSchema, projectSchema } from "../app/content/schema.ts";
 
 /**
  * Build-time content index (Node only).
@@ -63,7 +63,8 @@ function readingMinutes(body: string) {
     .replace(/```[\s\S]*?```/g, " ")
     .split(/\s+/)
     .filter(Boolean).length;
-  return Math.max(1, Math.round(words / 220));
+  // 200 words per minute, rounded up: a 1.4-minute read is shown as 2 min.
+  return Math.max(1, Math.ceil(words / 200));
 }
 
 /** All valid entries in a collection, drafts included. Throws on invalid content. */

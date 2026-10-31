@@ -10,8 +10,10 @@ import {
 } from "react-router";
 
 import type { Route } from "./+types/root";
-import "virtual:display-font.css";
-import "./app.css";
+// Loaded as a URL and rendered with `precedence` (below) so React writes the
+// stylesheet BEFORE the ~20 module preloads in <head>. As a side-effect import it
+// came last, and on slow mobile connections first paint waited behind the JS.
+import appCss from "./app.css?url";
 import { RevealObserver } from "./components/layout/RevealObserver";
 import { SiteFooter } from "./components/layout/SiteFooter";
 import { SiteHeader } from "./components/layout/SiteHeader";
@@ -40,6 +42,7 @@ export function Layout({ children }: { children: ReactNode }) {
         <meta name="theme-color" content="#08090D" />
         <meta name="color-scheme" content="dark" />
         <script dangerouslySetInnerHTML={{ __html: JS_FLAG }} />
+        <link rel="stylesheet" href={appCss} precedence="default" />
         <Meta />
         <Links />
       </head>

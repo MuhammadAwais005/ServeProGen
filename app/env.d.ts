@@ -14,9 +14,6 @@ interface ImportMeta {
 /** True in `npm run dev` and preview builds: drafts are shown with a banner. */
 declare const __CONTENT_PREVIEW__: boolean;
 
-/** Clash Display @font-face, emitted only when the font file exists. */
-declare module "virtual:display-font.css";
-
 type ContentTocItem = { depth: 2 | 3; text: string; id: string };
 
 declare module "virtual:content/projects" {

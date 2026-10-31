@@ -10,7 +10,7 @@ import {
   contactDevApiPlugin,
   contentPlugin,
   displayFontPlugin,
-} from "./config/vite-plugins";
+} from "./config/vite-plugins.ts";
 
 export default defineConfig(({ command }) => {
   // The dev server previews drafts by default; production builds never do,
@@ -42,9 +42,30 @@ export default defineConfig(({ command }) => {
     resolve: {
       tsconfigPaths: true,
     },
+    // Dev server only: pre-bundle libraries that are imported lazily (scroll effects,
+    // the 3D hero, the contact form). Without this, the first `npm run dev` on a new
+    // machine discovers them mid-page, reloads, and briefly shows React hook errors.
+    optimizeDeps: {
+      include: [
+        "gsap",
+        "gsap/ScrollTrigger",
+        "lenis",
+        "lucide-react",
+        "motion/react",
+        "react-hook-form",
+        "@hookform/resolvers/zod",
+        "zod",
+        "three",
+        "@react-three/fiber",
+      ],
+    },
     build: {
-      // three.js is split into the lazily loaded hero chunk; warn only above it.
-      chunkSizeWarningLimit: 900,
+      // The only chunk above 500 kB is the Neural Lattice hero (three.js + React
+      // Three Fiber, ~920 kB raw / ~240 kB gzip). It is never on the critical path:
+      // it loads after the page is visible, only on capable devices, and never under
+      // reduced motion or on low-power devices (see useDeviceTier). Any other chunk
+      // growing past 1 MB still warns.
+      chunkSizeWarningLimit: 1000,
     },
   };
 });

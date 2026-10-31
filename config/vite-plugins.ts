@@ -1,7 +1,7 @@
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 import type { Plugin } from "vite";
-import { CONTENT_DIR, visibleEntries, type Collection } from "./content";
+import { CONTENT_DIR, visibleEntries, type Collection } from "./content.ts";
 
 /**
  * Content plugin. Exposes four virtual modules:
@@ -126,31 +126,31 @@ export function contactDevApiPlugin(): Plugin {
  * causes a 404 or a build warning; headings fall back to Geist.
  */
 export function displayFontPlugin(): Plugin {
-  const virtualId = "virtual:display-font.css";
-  const resolvedId = `\0${virtualId}`;
   const fontFile = resolve(
     import.meta.dirname,
     "..",
     "public/fonts/ClashDisplay-Variable.woff2",
   );
-
-  return {
-    name: "serveprogen:display-font",
-    resolveId(id) {
-      return id === virtualId ? resolvedId : undefined;
-    },
-    load(id) {
-      if (id !== resolvedId) return undefined;
-      if (!existsSync(fontFile)) {
-        return "/* Clash Display not installed: headings use the Geist fallback. */";
-      }
-      return `@font-face {
+  const fontFace = `
+@font-face {
   font-family: "Clash Display";
   src: url("/fonts/ClashDisplay-Variable.woff2") format("woff2");
   font-weight: 200 700;
   font-style: normal;
   font-display: swap;
-}`;
+}
+`;
+
+  return {
+    name: "serveprogen:display-font",
+    // Appends the @font-face to app.css only when the licensed font file exists,
+    // so there is one stylesheet and no request for a missing font.
+    enforce: "pre",
+    transform(code, id) {
+      // Vite compiles a `?url` stylesheet import as `app.css?transform-only`.
+      if (!/[\\/]app[\\/]app\.css(\?transform-only)?$/.test(id)) return undefined;
+      if (!existsSync(fontFile)) return undefined;
+      return { code: `${code}\n${fontFace}`, map: null };
     },
   };
 }

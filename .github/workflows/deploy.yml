@@ -1,0 +1,68 @@
+name: Publish build for Hostinger
+
+# Manual only. Builds the site and pushes the static output (build/client) to a
+# deploy branch that Hostinger's Git deployment serves as public_html:
+#   staging    → branch deploy-staging     (always noindex)
+#   production → branch deploy-production  (indexing per repository variables)
+#
+# Nothing here touches any other website. The private/ folder (mail config,
+# PHPMailer) is uploaded to the server once by hand; see docs/DEPLOYMENT.md.
+#
+# Repository → Settings → Secrets and variables → Actions → Variables:
+#   STAGING_SITE_URL      e.g. https://staging-xyz.hostingersite.com   (optional)
+#   PRODUCTION_SITE_URL   e.g. https://serveprogen.com                  (required for production)
+#   PRODUCTION_INDEXING   "true" to let search engines index production
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Where to publish
+        type: choice
+        options: [staging, production]
+        default: staging
+
+permissions:
+  contents: write
+
+concurrency:
+  group: deploy-${{ inputs.target }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: ${{ inputs.target }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm test
+
+      - name: Build
+        env:
+          VITE_SITE_URL: ${{ inputs.target == 'production' && vars.PRODUCTION_SITE_URL || vars.STAGING_SITE_URL }}
+          VITE_NOINDEX: ${{ inputs.target == 'production' && vars.PRODUCTION_INDEXING == 'true' && 'false' || 'true' }}
+        run: |
+          if [ "${{ inputs.target }}" = "production" ] && [ -z "$VITE_SITE_URL" ]; then
+            echo "::error::Set the PRODUCTION_SITE_URL repository variable before publishing production."
+            exit 1
+          fi
+          npm run build
+
+      - name: Push build to deploy-${{ inputs.target }}
+        run: |
+          cd build/client
+          git init -q -b deploy-${{ inputs.target }}
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Build ${GITHUB_SHA::7} for ${{ inputs.target }}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" HEAD:deploy-${{ inputs.target }}
+          echo "Published ${GITHUB_SHA::7} to branch deploy-${{ inputs.target }}" >> "$GITHUB_STEP_SUMMARY"
