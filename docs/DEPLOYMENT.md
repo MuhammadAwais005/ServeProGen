@@ -51,6 +51,27 @@ It runs on the existing **Hostinger Business** plan as a **separate website**.
 - [ ] You have reviewed it with `npm run build && npm run serve` on http://localhost:4173.
 - [ ] The code is pushed to your private GitHub repository.
 
+## Current staging site (set up 1 Nov 2026)
+
+|                     |                                                                                                |
+| ------------------- | ---------------------------------------------------------------------------------------------- |
+| URL                 | https://chocolate-swan-850346.hostingersite.com                                                |
+| Hosting             | Business plan, its own website and folder (`domains/chocolate-swan-850346.hostingersite.com/`) |
+| Source of the files | GitHub `MuhammadAwais005/ServeProGen`, branch **`deploy-staging`** (built output only)         |
+| How it was deployed | Hostinger Git deployment cloning the public repository over HTTPS into `public_html`           |
+| Indexing            | Off (`noindex` + `robots.txt` blocks crawlers)                                                 |
+| Contact form        | Endpoint live; replies "not set up yet" until `private/mail-config.php` exists (section 5)     |
+
+**To update staging:** rebuild for the staging URL, commit the output to `deploy-staging`,
+push, then redeploy: hPanel → Websites → the staging site → Advanced → **Git** →
+**Deploy**, or ask Claude to redeploy through the Hostinger integration. Connecting GitHub
+in hPanel (Route A below) makes this automatic on every push.
+
+> The repository is public, which is what lets Hostinger clone it without credentials.
+> Drafts (unpublished projects, sample articles) are visible in the source on GitHub even
+> though they never appear on the site. To make the repository private, switch the
+> deployment to an SSH clone URL with Hostinger's Git SSH key added as a deploy key.
+
 ## 3. Stage on a free temporary subdomain
 
 Staging proves the real hosting behaviour (`.htaccess`, PHP, HTTPS) before you buy the domain.
