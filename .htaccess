@@ -18,6 +18,19 @@ ErrorDocument 403 /404/index.html
   # RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
   # RewriteRule ^ https://%1%{REQUEST_URI} [L,R=301]
 
+  # Hidden files and folders (.git/ from Git deployments, .htaccess, …) → 404.
+  # <FilesMatch "^\."> below only covers file names, not files inside dot-folders
+  # such as /.git/config, so block any path segment starting with a dot.
+  RewriteRule (^|/)\.(?!well-known(/|$)) - [R=404,L]
+
+  # Folders that are not pages (assets/, brand/, fonts/, og/, api/) → 404.
+  # This must come before the slash rule: Hostinger's LiteSpeed still appends a
+  # slash to such folders despite DirectorySlash Off, and the slash rule below
+  # would strip it again, looping forever (found on staging, Nov 2026).
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteCond %{REQUEST_FILENAME}/index.html !-f
+  RewriteRule ^ - [R=404,L]
+
   # Clean URLs without trailing slashes: /services/ -> /services
   DirectorySlash Off
   RewriteCond %{REQUEST_FILENAME} -d
