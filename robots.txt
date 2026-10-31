@@ -1,0 +1,3 @@
+# Indexing disabled for this build (preview, or VITE_NOINDEX is not false).
+User-agent: *
+Disallow: /
