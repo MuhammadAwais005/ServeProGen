@@ -1,9 +1,11 @@
 # Dependencies
 node_modules/
 
-# Build output
+# Build output and packaged ZIPs
 build/
 .react-router/
+exports/
+*.zip
 
 # Environment and secrets: never commit credentials
 .env
@@ -11,6 +13,12 @@ build/
 !.env.example
 server/config/*.php
 !server/config/mail.example.php
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*
 
 # OS / editor
 .DS_Store

@@ -9,6 +9,19 @@ import { projectStatuses } from "./status";
 
 const PLACEHOLDER = "[TO CONFIRM]";
 
+/** Frontmatter fields that can be marked as not yet confirmed by the founder. */
+const confirmableFields = [
+  "title",
+  "category",
+  "summary",
+  "status",
+  "services",
+  "stack",
+  "role",
+  "year",
+  "links",
+] as const;
+
 export const projectSchema = z
   .object({
     title: z.string().min(1),
@@ -25,12 +38,21 @@ export const projectSchema = z
         repo: z.url().optional(),
       })
       .default({}),
+    /** Fields still awaiting founder confirmation. Must be empty to publish. */
+    unconfirmed: z.array(z.enum(confirmableFields)).default([]),
     featured: z.boolean().default(false),
     published: z.boolean().default(false),
     order: z.number().default(100),
   })
   .superRefine((project, ctx) => {
     if (!project.published) return;
+    if (project.unconfirmed.length > 0) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["unconfirmed"],
+        message: `Confirm these fields before publishing: ${project.unconfirmed.join(", ")}.`,
+      });
+    }
     if (project.status === "unconfirmed") {
       ctx.addIssue({
         code: "custom",

@@ -26,8 +26,13 @@ export default function Home() {
 
       <Container className="py-20">
         <div className="flex max-w-4xl flex-col gap-8">
-          <p className="text-label text-muted">
-            <span className="text-accent">●</span> {site.positioning}
+          <p className="text-label flex items-start gap-3 text-muted">
+            {/* Decorative signal dot: hidden from screen readers, aligned with wrapped lines */}
+            <span
+              aria-hidden="true"
+              className="mt-0.5 size-1.5 shrink-0 rounded-full bg-accent"
+            />
+            <span>{site.positioning}</span>
           </p>
 
           <h1 id="hero-title" className="text-display">

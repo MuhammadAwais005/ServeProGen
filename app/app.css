@@ -1,8 +1,9 @@
 @import "tailwindcss";
 @import "@fontsource-variable/geist";
 @import "@fontsource-variable/geist-mono";
-@import "./styles/fonts.css";
 @import "./styles/tokens.css";
+/* Clash Display @font-face: injected by the displayFont plugin in vite.config.ts
+   (imported from root.tsx) only when public/fonts/ClashDisplay-Variable.woff2 exists. */
 
 /* ---------- Base ---------- */
 @layer base {

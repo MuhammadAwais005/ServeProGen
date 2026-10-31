@@ -16,13 +16,16 @@ import type { Route } from "./+types/brand";
 /** Runs at build time only; the page receives plain JSON. */
 export function loader() {
   return {
-    projects: getAllProjects().map(({ slug, title, category, status, published }) => ({
-      slug,
-      title,
-      category,
-      status,
-      published,
-    })),
+    projects: getAllProjects().map(
+      ({ slug, title, category, status, published, unconfirmed }) => ({
+        slug,
+        title,
+        category,
+        status,
+        published,
+        unconfirmed,
+      }),
+    ),
   };
 }
 
@@ -298,6 +301,11 @@ export default function BrandPage({ loaderData }: Route.ComponentProps) {
               <div className="flex flex-col">
                 <span className="font-medium">{p.title}</span>
                 <span className="text-small text-muted">{p.category}</span>
+                {p.unconfirmed.length > 0 && (
+                  <span className="text-small text-danger">
+                    Unconfirmed: {p.unconfirmed.join(", ")}
+                  </span>
+                )}
               </div>
               <div className="flex items-center gap-3">
                 <StatusBadge status={p.status} />

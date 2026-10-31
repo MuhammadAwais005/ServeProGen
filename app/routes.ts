@@ -1,11 +1,15 @@
 import { type RouteConfig, index, route } from "@react-router/dev/routes";
+import { includeInternalPages } from "../config/build";
 
 /**
- * Phase 1 routes. Each later page is added here AND to the prerender list in
- * react-router.config.ts. The catch-all must stay last.
+ * Route table. Static routes listed here are pre-rendered automatically
+ * (see react-router.config.ts). The catch-all must stay last.
  */
 export default [
   index("routes/home.tsx"),
-  route("brand", "routes/brand.tsx"),
+
+  // Internal review page: excluded from production builds.
+  ...(includeInternalPages ? [route("brand", "routes/brand.tsx")] : []),
+
   route("*", "routes/not-found.tsx"),
 ] satisfies RouteConfig;

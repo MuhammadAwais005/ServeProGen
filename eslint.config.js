@@ -5,7 +5,7 @@ import globals from "globals";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  { ignores: ["build", ".react-router", "node_modules", "public"] },
+  { ignores: ["build", ".react-router", "node_modules", "public", "exports"] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
@@ -26,6 +26,14 @@ export default tseslint.config(
         "error",
         { argsIgnorePattern: "^_", varsIgnorePattern: "^_", ignoreRestSiblings: true },
       ],
+    },
+  },
+  {
+    // Node scripts and config files (scripts/*.mjs, eslint.config.js).
+    files: ["**/*.{js,mjs}"],
+    languageOptions: {
+      ecmaVersion: 2022,
+      globals: globals.node,
     },
   },
 );

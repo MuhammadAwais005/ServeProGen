@@ -32,6 +32,7 @@ Optional: add the Clash Display font, see `public/fonts/README.md`.
 | `npm run lint`      | ESLint, including accessibility rules                         |
 | `npm run format`    | Formats code with Prettier                                    |
 | `npm run check`     | Everything CI runs, in order                                  |
+| `npm run package`   | Clean source ZIP of the last commit into `exports/`           |
 
 ## Where things live
 
@@ -54,12 +55,37 @@ server/             contact form server code and config template (no secrets)
 
 1. Copy `app/content/projects/_template.mdx` to `app/content/projects/my-project.mdx`.
 2. Fill in the frontmatter and write the case study below it.
-3. Set `published: true` only when every fact is confirmed. The build refuses a
-   published project with an unconfirmed status or placeholder text.
+3. List any field you haven't verified in `unconfirmed: [...]`.
+4. Set `published: true` only when every fact is confirmed. The build stops with a
+   message naming the file and field if a published project has an `unconfirmed`
+   list, an unconfirmed status, or `[TO CONFIRM]` text.
+
+Published projects are pre-rendered at `/work/<file-name>` automatically.
 
 ### Adding an article
 
 Copy `app/content/insights/_template.mdx`, write, set `published: true`.
+It is pre-rendered at `/insights/<file-name>` automatically.
+
+### Adding a page
+
+Add the route in `app/routes.ts`. Every route without a URL parameter is
+pre-rendered automatically; nothing else to register.
+
+## Internal pages
+
+`/brand` is a review page (logo, tokens, components, draft content status). It is
+included in local and staging builds and removed from production builds:
+
+```bash
+INCLUDE_INTERNAL_PAGES=false npm run build
+```
+
+## Sharing the code
+
+Use `npm run package`. It zips only committed files (no `.git`, `node_modules`,
+build output or real `.env` / credential files) and refuses to run if a secret-looking
+file is committed. Uncommitted changes are not included; commit first.
 
 ## Content rules
 

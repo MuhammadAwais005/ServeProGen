@@ -10,3 +10,6 @@ interface ImportMetaEnv {
 interface ImportMeta {
   readonly env: ImportMetaEnv;
 }
+
+/** Clash Display @font-face, emitted only when the font file exists (vite.config.ts). */
+declare module "virtual:display-font.css";
